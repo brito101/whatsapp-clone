@@ -55,7 +55,9 @@ function App() {
         <div className="chatList">
           {chatList.map((item, key) => (
             <ChatListItem
+              active={activeChat.chatId === chatList[key].chatId}
               key={key}
+              data={item}
               onClick={() => setActiveChat(chatList[key])}
             />
           ))}
