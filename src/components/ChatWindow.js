@@ -8,11 +8,25 @@ import SendIcon from "@mui/icons-material/Send";
 import MicIcon from "@mui/icons-material/Mic";
 import EmojiPicker from "emoji-picker-react";
 import { useState } from "react";
+import MessageItem from "./MessageItem";
 
 function ChatWindow() {
-  const [emojiOpen, setEmojiOpen] = useState(false);
+  let recognition = null;
+  let SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  const handleEmojiClick = () => {};
+  if (SpeechRecognition !== undefined) {
+    recognition = new SpeechRecognition();
+  }
+
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [listening, setListening] = useState(false);
+  const [list, setList] = useState([1,2,3]);
+
+  const handleEmojiClick = ({ emoji }) => {
+    setText(text + emoji);
+  };
 
   const handleOpenEmoji = () => {
     setEmojiOpen(true);
@@ -20,6 +34,26 @@ function ChatWindow() {
 
   const handleCloseEmoji = () => {
     setEmojiOpen(false);
+  };
+
+  const handleSendClick = () => {
+   
+  };
+
+  const handleMicClick = () => {
+    if (recognition !== null) {
+      recognition.onstart = () => {
+        setListening(true);
+      };
+      recognition.onend = () => {
+        setListening(false);
+      };
+      recognition.onresult = (e) => {
+        setText(e.results[0][0].transcript);
+      };
+
+      recognition.start();
+    }
   };
 
   return (
@@ -45,7 +79,11 @@ function ChatWindow() {
           </div>
         </div>
       </div>
-      <div className="chatWindow-body"></div>
+      <div className="chatWindow-body">
+        {list.map((item, key) => (
+          <MessageItem key={key} data={item} />
+        ))}
+      </div>
       <div
         className="chatWindow-emojiArea"
         style={{ height: emojiOpen ? "450px" : "0px" }}
@@ -79,12 +117,20 @@ function ChatWindow() {
             className="chatWindow-input"
             type="text"
             placeholder="Digite uma mensagem"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
           />
         </div>
         <div className="chatWindow-pos">
-          <div className="chatWindow-btn">
-            <SendIcon style={{ color: "#919191" }} />
-          </div>
+          {text === "" ? (
+            <div className="chatWindow-btn" onClick={handleMicClick}>
+              <MicIcon style={{ color: listening ? "#126ECE" : "#919191" }} />
+            </div>
+          ) : (
+            <div className="chatWindow-btn" onClick={handleSendClick}>
+              <SendIcon style={{ color: "#919191" }} />
+            </div>
+          )}
         </div>
       </div>
     </div>
