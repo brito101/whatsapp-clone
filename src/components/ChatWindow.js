@@ -7,10 +7,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import MicIcon from "@mui/icons-material/Mic";
 import EmojiPicker from "emoji-picker-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessageItem from "./MessageItem";
 
-function ChatWindow() {
+function ChatWindow({ user }) {
+  const body = useRef();
+
   let recognition = null;
   let SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -22,7 +24,59 @@ function ChatWindow() {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [text, setText] = useState("");
   const [listening, setListening] = useState(false);
-  const [list, setList] = useState([1,2,3]);
+  const [list, setList] = useState([
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+    { author: 123, body: "bla bla" },
+    { author: 123, body: "bla ble" },
+    { author: 1234, body: "bla bli" },
+    { author: 1234, body: "bla blo" },
+  ]);
+
+  useEffect(() => {
+    if (body.current.scrollHeight > body.current.offsetHeight) {
+      body.current.scrollTop =
+        body.current.scrollHeight - body.current.offsetHeight;
+    }
+  }, [list]);
 
   const handleEmojiClick = ({ emoji }) => {
     setText(text + emoji);
@@ -36,9 +90,7 @@ function ChatWindow() {
     setEmojiOpen(false);
   };
 
-  const handleSendClick = () => {
-   
-  };
+  const handleSendClick = () => {};
 
   const handleMicClick = () => {
     if (recognition !== null) {
@@ -79,9 +131,9 @@ function ChatWindow() {
           </div>
         </div>
       </div>
-      <div className="chatWindow-body">
+      <div className="chatWindow-body" ref={body}>
         {list.map((item, key) => (
-          <MessageItem key={key} data={item} />
+          <MessageItem key={key} data={item} user={user} />
         ))}
       </div>
       <div
